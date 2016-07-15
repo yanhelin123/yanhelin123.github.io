@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8" />
+  
+  <title>作为一个有经验的iOS工程师你这些应该最熟悉 | 闫鹤林的技术博客</title>
+  <meta name="author" content="闫鹤林" />
+
+  
+  <meta name="description" content="待续..." />
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <meta property="og:title" content="作为一个有经验的iOS工程师你这些应该最熟悉" />
+  <meta property="og:site_name" content="闫鹤林的技术博客" />
+
+  
+  
+
+  
+    <meta property="og:image" content="undefined" />
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon" />
+  
+
+  <link rel="alternate" href="/atom.xml" title="闫鹤林的技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src='//push.zhanzhang.baidu.com/push.js'></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">闫鹤林的技术博客</a></h1>
+  <h2><a href="/">小小Y</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-04-04T10:28:56.000Z"><a href="/2015/04/04/作为一个有经验的iOS工程师你这些应该最熟悉/">2015-04-04</a></time>
+      
+      
+  
+    <h1 class="title">作为一个有经验的iOS工程师你这些应该最熟悉</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="1、strong和copy到底怎么理解他们的区别："><a href="#1、strong和copy到底怎么理解他们的区别：" class="headerlink" title="1、strong和copy到底怎么理解他们的区别："></a>1、strong和copy到底怎么理解他们的区别：</h1><p>大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢?</p>
+<p>我们遇到的问题是这样的：<br>  在定义一个类的property时候，为property选择strong还是copy特别注意和研究明白的，如果property是NSString或者NSArray及其子类的时候，最好选择使用copy属性修饰。为什么呢？这是为了防止赋值给它的是可变的数据，如果可变的数据发生了变化，那么该property也会发生变化。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">比如：</span><br><span class="line">@property (retain,nonatomic) NSString *rStr;</span><br><span class="line">@property (copy, nonatomic)   NSString *cStr;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)test:</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableString *mStr = [NSMutableStringstringWithFormat:@<span class="string">"abc"</span>];</span><br><span class="line">    self.rStr   = mStr;</span><br><span class="line">    self.cStr     = mStr;</span><br><span class="line">    NSLog(@<span class="string">"mStr:%p,%p"</span>,  mStr,&amp;mStr);</span><br><span class="line">    NSLog(@<span class="string">"retainStr:%p,%p"</span>, _rStr, &amp;_rStr);</span><br><span class="line">    NSLog(@<span class="string">"copyStr:%p,%p"</span>,   _cStr, &amp;_cStr);</span><br><span class="line">｝</span><br></pre></td></tr></table></figure></p>
+<p>  假如，mStr对象的地址为0x11，也就是0x11是@“abc”的首地址，mStr变量自身在内存中的地址为0x123；<br>  当把mStr赋值给retain的rStr时，rStr对象的地址为0x11，rStr变量自身在内存中的地址为0x124；rStr与mStr指向同样的地址，他们指向的是同一个对象@“abc”，这个对象的地址为0x11，所以他们的值是一样的。<br>  当把mStr赋值给copy的cStr时，cStr对象的地址为0x22，cStr变量自身在内存中的地址0x125；cStr与mStr指向的地址是不一样的，他们指向的是不同的对象，所以copy是深复制，一个新的对象，这个对象的地址为0x22，值为@“abc”。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">如果现在改变mStr的值：</span><br><span class="line">    [mStr appendString:@<span class="string">"de"</span>];</span><br><span class="line">    NSLog(@<span class="string">"retainStr:%@"</span>,  _rStr);</span><br><span class="line">    NSLog(@<span class="string">"copyStr:%@"</span>,    _cStr);</span><br></pre></td></tr></table></figure></p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">使用retain的字串rStr的值：@<span class="string">"abcde"</span>,</span><br><span class="line">而使用copy的字串cStr的值:@<span class="string">"abc"</span>,</span><br><span class="line">所以，如果一般情况下，我们都不希望字串的值跟着mStr变化，所以我们一般用copy来设置string的属性。</span><br><span class="line">如果希望字串的值跟着赋值的字串的值变化，可以使用strong，retain。</span><br><span class="line">注意：上面的情况是针对于当把NSMutableString赋值给NSString的时候，才会有不同，如果是赋值是NSString对象，那么使用copy还是strong，结果都是一样的，因为NSString对象根本就不能改变自身的值，他是不可变的。</span><br><span class="line"></span><br><span class="line">把一个对象赋值给一个属性变量，当这个对象变化了，如果希望属性变量变化就使用strong属性，如果希望属性变量不跟着变化，就是用copy属性。</span><br></pre></td></tr></table></figure>
+<h2 id="由此可以看出："><a href="#由此可以看出：" class="headerlink" title="由此可以看出："></a>由此可以看出：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对源头是NSMutableString的字符串，retain仅仅是指针引用，增加了引用计数器，这样源头改变的时候，用这种retain方式声明的变量（无论被赋值的变量是可变的还是不可变的），它也会跟着改变;而copy声明的变量，它不会跟着源头改变，它实际上是深拷贝。</span><br><span class="line"></span><br><span class="line">对源头是NSString的字符串，无论是retain声明的变量还是copy声明的变量，当第二次源头的字符串重新指向其它的地方的时候，它还是指向原来的最初的那个位置，也就是说其实二者都是指针引用，也就是浅拷贝。</span><br></pre></td></tr></table></figure>
+<h2 id="另外说明一下，这两者对内存计数的影响都是一样的，都会增加内存引用计数，都需要在最后的时候做处理。"><a href="#另外说明一下，这两者对内存计数的影响都是一样的，都会增加内存引用计数，都需要在最后的时候做处理。" class="headerlink" title="另外说明一下，这两者对内存计数的影响都是一样的，都会增加内存引用计数，都需要在最后的时候做处理。"></a>另外说明一下，这两者对内存计数的影响都是一样的，都会增加内存引用计数，都需要在最后的时候做处理。</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">其实说白了，对字符串为啥要用这两种方式？我觉得还是一个安全问题，比如声明的一个NSString *str变量，然后把一个NSMutableString *mStr变量的赋值给它了，如果要求str跟着mStr变化，那么就用retain;如果str不能跟着mStr一起变化，那就用copy。而对于要把NSString类型的字符串赋值给str，那两都没啥区别。不会影响安全性，内存管理也一样。</span><br></pre></td></tr></table></figure>
+<h1 id="2、"><a href="#2、" class="headerlink" title="2、"></a>2、</h1><h3 id="创建一篇新博文"><a href="#创建一篇新博文" class="headerlink" title="创建一篇新博文"></a>创建一篇新博文</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"索要创建的文件名"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="运行服务器"><a href="#运行服务器" class="headerlink" title="运行服务器"></a>运行服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="生成静态文件-hexo-generate（以下缩写）"><a href="#生成静态文件-hexo-generate（以下缩写）" class="headerlink" title="生成静态文件 hexo generate（以下缩写）"></a>生成静态文件 hexo generate（以下缩写）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="同步-hexo-deploy（以下缩写）"><a href="#同步-hexo-deploy（以下缩写）" class="headerlink" title="同步 hexo deploy（以下缩写）"></a>同步 hexo deploy（以下缩写）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d</span><br></pre></td></tr></table></figure>
+<h2 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h2><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/iOS/">iOS</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2016/07/08/cocoaPods新版使用语法/">cocoaPods新版使用语法</a>
+      </li>
+    
+      <li>
+        <a href="/2016/07/08/blog错误导致部分文件丢失问题解决办法/">blog错误导致部分文件丢失问题解决办法</a>
+      </li>
+    
+      <li>
+        <a href="/2015/06/07/葵花宝典/">葵花宝典</a>
+      </li>
+    
+      <li>
+        <a href="/2015/04/04/作为一个有经验的iOS工程师你这些应该最熟悉/">作为一个有经验的iOS工程师你这些应该最熟悉</a>
+      </li>
+    
+      <li>
+        <a href="/2015/03/01/iOS即时通讯/">iOS即时通讯</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/iOS/">iOS</a><small>1</small></li>
+  
+    <li><a href="/tags/iOS-HTML5/">iOS HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/ios/">ios</a><small>3</small></li>
+  
+    <li><a href="/tags/ios-HTML5跨平台/">ios HTML5跨平台</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/iOS-HTML5/" style="font-size: 10px;">iOS HTML5</a> <a href="/tags/ios/" style="font-size: 20px;">ios</a> <a href="/tags/ios-HTML5跨平台/" style="font-size: 15px;">ios HTML5跨平台</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2016 闫鹤林
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id='bg'></div>
+</body>
+</html>
